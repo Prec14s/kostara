@@ -23,7 +23,7 @@ class PaymentSettingController extends Controller
             'bank_name' => ['nullable', 'string', 'max:100'],
             'bank_account_number' => ['nullable', 'string', 'max:50'],
             'bank_account_holder' => ['nullable', 'string', 'max:255'],
-            'qris_image' => ['nullable', 'image', 'max:2048'],
+            'qris_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
             'terima_tunai' => ['sometimes', 'boolean'],
         ]);
 

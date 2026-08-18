@@ -34,7 +34,7 @@ class MaintenanceController extends Controller
             'kamar_id' => ['required', 'exists:kamars,id'],
             'jenis_masalah' => ['required', 'in:ac_rusak,lampu_rusak,keran_toilet,ganti_sprei,bersihkan_kamar,pintu_kunci,listrik,wifi,perabot_rusak,hama_serangga,lainnya'],
             'deskripsi' => ['nullable', 'string'],
-            'foto' => ['nullable', 'image', 'max:4096'],
+            'foto' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
             'prioritas' => ['required', 'in:rendah,sedang,tinggi'],
         ]);
 
@@ -71,11 +71,21 @@ class MaintenanceController extends Controller
 
     public function updateStatus(Request $request, MaintenanceReport $maintenanceReport): RedirectResponse
     {
+        $user = $request->user();
+
+        if ($user->isOwner()) {
+            abort_unless((int) $maintenanceReport->kamar->kos->owner_id === (int) $user->id, 403, 'Laporan maintenance ini bukan milik kos Anda.');
+        } elseif ($user->isPenjaga()) {
+            abort_unless((int) $maintenanceReport->kamar->penjaga_id === (int) $user->id, 403, 'Laporan maintenance ini bukan milik kamar yang Anda jaga.');
+        } else {
+            abort(403);
+        }
+
         $data = $request->validate(['status' => ['required', 'in:menunggu,diproses,selesai,ditolak']]);
 
         $maintenanceReport->update([
             'status' => $data['status'],
-            'handled_by' => $request->user()->id,
+            'handled_by' => $user->id,
         ]);
 
         return back()->with('status', 'Status maintenance diperbarui.');

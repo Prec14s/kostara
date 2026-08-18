@@ -149,7 +149,7 @@ class KamarController extends Controller
             'deskripsi' => ['nullable', 'string'],
             'fasilitas' => ['nullable', 'string'],
             'fotos' => ['nullable', 'array', 'max:8'],
-            'fotos.*' => ['image', 'max:2048'],
+            'fotos.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
             'harga_harian' => ['nullable', 'numeric', 'min:0'],
             'harga_mingguan' => ['nullable', 'numeric', 'min:0'],
             'harga_bulanan' => ['nullable', 'numeric', 'min:0'],
@@ -166,13 +166,7 @@ class KamarController extends Controller
     {
         $ownerId = (int) $kos->owner_id;
         $userId = (int) request()->user()->id;
-        $message = 'Kos ini bukan milik akun Anda.';
 
-        if (config('app.debug')) {
-            $dbName = \Illuminate\Support\Facades\DB::connection()->getDatabaseName();
-            $message .= " [debug: db={$dbName} | kos #{$kos->id} \"{$kos->nama}\" owner_id={$ownerId} | akun login id={$userId} email=".request()->user()->email.']';
-        }
-
-        abort_unless($ownerId === $userId, 403, $message);
+        abort_unless($ownerId === $userId, 403, 'Kos ini bukan milik akun Anda.');
     }
 }

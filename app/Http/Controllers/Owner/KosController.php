@@ -72,7 +72,7 @@ class KosController extends Controller
             'nama' => ['required', 'string', 'max:255'],
             'deskripsi' => ['nullable', 'string'],
             'alamat' => ['required', 'string'],
-            'foto' => ['nullable', 'image', 'max:2048'],
+            'foto' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
             'fasilitas' => ['nullable', 'string'],
             'peraturan' => ['nullable', 'string'],
             'jam_operasional' => ['nullable', 'string', 'max:255'],
@@ -85,13 +85,7 @@ class KosController extends Controller
     {
         $ownerId = (int) $kos->owner_id;
         $userId = (int) request()->user()->id;
-        $message = 'Kos ini bukan milik akun Anda.';
 
-        if (config('app.debug')) {
-            $dbName = \Illuminate\Support\Facades\DB::connection()->getDatabaseName();
-            $message .= " [debug: db={$dbName} | kos #{$kos->id} \"{$kos->nama}\" owner_id={$ownerId} | akun login id={$userId} email=".request()->user()->email.']';
-        }
-
-        abort_unless($ownerId === $userId, 403, $message);
+        abort_unless($ownerId === $userId, 403, 'Kos ini bukan milik akun Anda.');
     }
 }

@@ -33,7 +33,7 @@ class PenyewaLangsungController extends Controller
             'nama' => ['required', 'string', 'max:255'],
             'whatsapp' => ['required', 'string', 'max:20'],
             'no_ktp' => ['nullable', 'string', 'max:50'],
-            'foto_ktp' => ['nullable', 'image', 'max:4096'],
+            'foto_ktp' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
             'alamat' => ['nullable', 'string'],
             'jenis_durasi' => ['required', 'in:harian,mingguan,bulanan,tahunan'],
             'tanggal_mulai' => ['required', 'date'],

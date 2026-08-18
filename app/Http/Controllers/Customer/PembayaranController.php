@@ -41,7 +41,7 @@ class PembayaranController extends Controller
 
         $data = $request->validate([
             'metode' => ['required', 'in:transfer_bank,qris,tunai'],
-            'bukti_pembayaran' => ['required_unless:metode,tunai', 'nullable', 'image', 'max:4096'],
+            'bukti_pembayaran' => ['required_unless:metode,tunai', 'nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
         ]);
 
         if ($request->hasFile('bukti_pembayaran')) {
